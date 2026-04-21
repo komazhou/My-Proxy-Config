@@ -1,0 +1,390 @@
+allow_external_connections: true
+vif_only: true
+hijack_dns:
+- '*:53'
+geoip_db_url: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb
+asn_db_url: https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-ASN.mmdb
+proxy_latency_test_url: http://1.1.1.1/generate_204
+direct_latency_test_url: http://connectivitycheck.platform.hicloud.com/generate_204
+dns:
+  bootstrap:
+  - system
+  upstreams:
+    Domestic-DNS:
+    - 223.5.5.5
+    - 119.29.29.29
+  forward:
+  - domain_wildcard:
+      match: '*'
+      value: Domestic-DNS
+  hosts:
+    iosapps.itunes.apple.com:
+    - iosapps.itunes.apple.com.download.ks-cdn.com
+policy_groups:
+- external:
+    name: Sub_Store订阅
+    type: auto_test
+    urls:
+    - https://sub.store/download/collection/SubStore
+    - https://67.230.175.228:2096/sub/UNI4zLk1ajxivz2/l7h8pj102f7pf5w7
+    icon: https://github.com/Repcz/Repcz.github.io/raw/main/docs/egern/Photo/Egern.png
+    hidden: false
+- select:
+    name: 🏠 我的VPS
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)(VPS)
+    hidden: false
+- auto_test:
+    name: 🌟 VIP全局
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: VIP
+    hidden: false
+- auto_test:
+    name: 🤖 VIP-AI池
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: VIP.*(美|US|United States|日|JP|新|SG|台|TW)
+    hidden: false
+- auto_test:
+    name: 🌍 STD全局
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: STD
+    hidden: false
+- auto_test:
+    name: 🤖 STD-AI池
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: STD.*(美|US|United States|日|JP|新|SG|台|TW)
+    hidden: false
+- auto_test:
+    name: ♻️ LOW兜底
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: LOW
+    hidden: false
+- fallback:
+    name: 🤖 AI服务
+    policies:
+    - 🏠 我的VPS
+    - 🤖 VIP-AI池
+    - 🤖 STD-AI池
+    flatten: false
+    hidden: false
+- fallback:
+    name: 📺 影音搜索
+    policies:
+    - 🌍 STD全局
+    - 🌟 VIP全局
+    - 🏠 我的VPS
+    - ♻️ LOW兜底
+    flatten: false
+    hidden: false
+- fallback:
+    name: 🐟 漏网之鱼
+    policies:
+    - 🌍 STD全局
+    - 🌟 VIP全局
+    - ♻️ LOW兜底
+    - 🏠 我的VPS
+    flatten: false
+    hidden: false
+- select:
+    name: 国外网站
+    policies:
+    - Sub_Store订阅
+    flatten: false
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png
+    hidden: false
+- select:
+    name: 国际媒体
+    policies:
+    - 📺 影音搜索
+    flatten: false
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
+    hidden: false
+- select:
+    name: 微软服务
+    policies:
+    - 香港节点
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png
+- select:
+    name: 谷歌服务
+    policies:
+    - 🏠 我的VPS
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    flatten: false
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png
+    hidden: false
+- select:
+    name: 电报消息
+    policies:
+    - 香港节点
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png
+- select:
+    name: 推特消息
+    policies:
+    - 香港节点
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Twitter.png
+- select:
+    name: 游戏平台
+    policies:
+    - 香港节点
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Game.png
+- select:
+    name: Emby
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Emby.png
+- select:
+    name: 兜底分流
+    policies:
+    - 香港节点
+    - 美国节点
+    - 狮城节点
+    - 日本节点
+    - 台湾节点
+    - Sub_Store订阅
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Final.png
+- auto_test:
+    name: 香港节点
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)🇭🇰|香港|(\b(HK|Hong)\b)
+    tolerance: 0
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png
+- auto_test:
+    name: 美国节点
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)🇺🇸|美国|洛杉矶|圣何塞|(\b(US|United States)\b)
+    tolerance: 0
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png
+- auto_test:
+    name: 狮城节点
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)
+    tolerance: 0
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png
+- auto_test:
+    name: 日本节点
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)🇯🇵|日本|东京|(\b(JP|Japan)\b)
+    tolerance: 0
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png
+- auto_test:
+    name: 台湾节点
+    policies:
+    - Sub_Store订阅
+    flatten: true
+    filter: (?i)🇨🇳|🇹🇼|台湾|(\b(TW|Tai|Taiwan)\b)
+    tolerance: 0
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/China.png
+rules:
+- domain:
+    match: wtmdjxkq.com
+    policy: DIRECT
+    disabled: false
+- domain_suffix:
+    match: yoozb.live
+    policy: DIRECT
+    disabled: false
+- domain:
+    match: translate.google.com
+    policy: 🤖 AI服务
+    disabled: false
+- domain:
+    name: Google翻译
+    match: translate-pa.googleapis.com
+    policy: 🤖 AI服务
+    disabled: false
+- ssid:
+    name: Wi-Fi直连
+    match: QiJin*
+    policy: DIRECT
+    disabled: false
+- domain:
+    match: remote.runyun.eu.org
+    policy: DIRECT
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Direct.yaml
+    policy: DIRECT
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Reject.yaml
+    policy: REJECT
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/AI.yaml
+    policy: 🤖 AI服务
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Github.yaml
+    policy: 微软服务
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/OneDrive.yaml
+    policy: 微软服务
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Microsoft.yaml
+    policy: 微软服务
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/YouTube.yaml
+    policy: 📺 影音搜索
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Google.yaml
+    policy: 🤖 AI服务
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Telegram.yaml
+    policy: 电报消息
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Twitter.yaml
+    policy: 推特消息
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Game.yaml
+    policy: 游戏平台
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Emby.yaml
+    policy: Emby
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Bahamut.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Disney.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/HBO.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Netflix.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Spotify.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/PrimeVideo.yaml
+    policy: 国际媒体
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/TikTok.yaml
+    policy: 日本节点
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Proxy.yaml
+    policy: 国外网站
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/AppleCN.yaml
+    policy: DIRECT
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/AppleServers.yaml
+    policy: DIRECT
+    disabled: false
+- rule_set:
+    match: https://github.com/Repcz/Tool/raw/X/Egern/Rules/Lan.yaml
+    policy: DIRECT
+- geoip:
+    match: CN
+    policy: DIRECT
+- default:
+    policy: 🐟 漏网之鱼
+mitm:
+  ca_p12: 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
+  ca_passphrase: egern
+modules:
+- url: https://github.com/NSRingo/Siri/releases/latest/download/iRingo.Siri.yaml
+  enabled: true
+- url: https://raw.githubusercontent.com/egerndaddy/quick-start/refs/heads/main/modules/widgets.yaml
+  enabled: true
+- url: https://github.com/NSRingo/WeatherKit/releases/latest/download/iRingo.WeatherKit.yaml
+  enabled: true
+- url: http://script.hub/file/_start_/https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.conf/_end_/spotify.sgmodule?type=qx-rewrite&target=surge-module&del=true&jqEnabled=true
+  enabled: false
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/WexinMiniPrograms_Remove_ads.lpx/_end_/WexinMiniPrograms_Remove_ads.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Weixin_Official_Accounts_remove_ads.lpx/_end_/Weixin_Official_Accounts_remove_ads.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Prevent_DNS_Leaks.lpx/_end_/Prevent_DNS_Leaks.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Weixin_external_links_unlock.lpx/_end_/Weixin_external_links_unlock.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.module
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Spotify_lyrics_translation.lpx/_end_/Spotify_lyrics_translation.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Switch_github_mirror.lpx/_end_/Switch_github_mirror.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/NodeLinkCheck.lpx/_end_/NodeLinkCheck.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Node_detection_tool.lpx/_end_/Node_detection_tool.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Google.lpx/_end_/Google.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: https://raw.githubusercontent.com/NobyDa/Script/master/Surge/Module/GoogleCAPTCHA.sgmodule
+  enabled: true
+- url: https://github.com/DualSubs/Spotify/releases/latest/download/DualSubs.Spotify.sgmodule
+  enabled: true
+- url: https://github.com/NSRingo/News/releases/latest/download/iRingo.News.sgmodule
+  enabled: false
+- url: http://script.hub/file/_start_/https://raw.githubusercontent.com/Yu9191/Rewrite/main/itunes/pollykann.js/_end_/pollykann.sgmodule?type=qx-rewrite&target=surge-module&del=true&jqEnabled=true
+  enabled: true
+- url: https://raw.githubusercontent.com/chxm1023/Script_X/main/Collections.sgmodule
+  enabled: false
+- url: https://raw.githubusercontent.com/NobyDa/Script/master/Surge/Module/IPA_install.sgmodule
+  enabled: true
+- url: https://github.com/NSRingo/Maps/releases/latest/download/iRingo.Maps.sgmodule
+  enabled: true
+- url: https://github.com/NSRingo/LocationService/releases/latest/download/iRingo.LocationService.sgmodule
+  enabled: true
+- url: https://github.com/Maasea/sgmodule/raw/master/YouTube.Enhance.sgmodule
+  enabled: true
+- url: https://raw.githubusercontent.com/158212892/QuantumultXMark/refs/heads/main/My/Egern/modules/pluginhub.yaml
+  enabled: true
+- url: https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.surge.sgmodule
+  enabled: true
+- url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/modules/script-hub.surge.sgmodule
+  enabled: true
+- url: https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/config/Surge.sgmodule
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/BlockAdvertisers.lpx/_end_/BlockAdvertisers.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+- url: http://script.hub/file/_start_/https://kelee.one/Tool/Loon/Lpx/Block_HTTPDNS.lpx/_end_/Block_HTTPDNS.sgmodule?type=loon-plugin&target=surge-module&del=true&jqEnabled=true&pm=.&sni=.
+  enabled: true
+default_subscription_group: substore订阅合集
